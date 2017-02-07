@@ -2,8 +2,9 @@ import React, { PropTypes } from 'react';
 import { Menu, Icon } from 'antd';
 import { Link } from 'dva/router';
 import styles from './MainLayout.less';
+import CookieUtil from '../../utils/Utils'
 
-function Header({ location, onModel, phoneNo }) {
+function Header({ location, onModel }) {
   return (
     <Menu
       mode="horizontal"
@@ -14,8 +15,8 @@ function Header({ location, onModel, phoneNo }) {
       </Menu.Item>
       <Menu.Item key="login" style={{float: 'right'}}>
         {
-          !phoneNo ? <span className={styles.login} onClick={onModel}>登录</span>
-          : <span>欢迎你,{phoneNo}</span>
+          !CookieUtil.getAll('admin') ? <span className={styles.login} onClick={onModel}>登录</span>
+          : <span>欢迎你,{CookieUtil.getAll('admin').phoneNo}</span>
         }
         
       </Menu.Item>

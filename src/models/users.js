@@ -4,6 +4,7 @@ import { message } from 'antd';
 import { routerRedux } from 'dva/router';
 import _ from 'lodash';
 import { login, getSortList, query} from '../services/users';
+import CookieUtil from '../utils/Utils'
 
 export default {
   namespace: 'users',
@@ -53,14 +54,24 @@ export default {
             type: 'loginSuccess',
             payload: data.data,
           });
+          CookieUtil.setAll('admin', {phoneNo:  data.data.phoneNo})
+          yield put({
+            type: 'query',
+            payload: location.query,
+          });
+          yield put({
+            type: 'getSortList',
+            payload: location.query,
+          });
         } else {
           message.error(data.msg);
         }
       }
     },
     *query({ payload }, { call, put, select }) {
-      const todos = yield select(state => state.users);
-      if (todos.phoneNo) {
+      const todos = CookieUtil.getAll('admin');
+
+      if (todos && todos.phoneNo) {
        const { data } = yield call(query, payload);
        if (data && data.statusCode === 0) {
           yield put({
@@ -75,8 +86,8 @@ export default {
       }
     },
     *getSortList({ payload }, { call, put, select }) {
-      const todos = yield select(state => state.users);
-      if (todos.phoneNo) {
+      const todos = CookieUtil.getAll('admin');
+      if (todos && todos.phoneNo) {
         const { data } = yield call(getSortList, payload);
         if (data && data.statusCode === 0) {
           yield put({
