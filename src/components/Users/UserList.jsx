@@ -45,30 +45,35 @@ export default class UserList extends Component {
   dragend(e) {
     let {dragged} = this.state;
     dragged.style.display = 'table-row';
+    let fromId = +dragged.dataset.id;
+    let toId = +this.over.parentNode.dataset.id;
+    this.props.sort(fromId, toId)
   }
 
   dragover(e) {
     e.preventDefault();
-    this.setState({
-      over: e.target
-    })
-    let {dragged, over} = this.state;
+    this.over = e.target;
+    let {dragged} = this.state;
     dragged.style.display = 'none';
-    if(over.className == "placeholder") {
+    if(this.over.className == "placeholder") {
       return;
     }
   }
 
   getBodyWrapper(body) {
     return (
-      <Animate transitionName="move" component="tbody" className={body.props.className}>
+      <Animate 
+        transitionName="move" 
+        component="tbody" 
+        className={body.props.className}
+      >
         {body.props.children}
       </Animate>
     );
   }
 
   render() {
-    const {totalPage, myLocation, current, loading, onPageChange, dataSource, up, handlePreview, down} = this.props;
+    const {totalPage, myLocation, current, loading, onPageChange, dataSource, sort, handlePreview} = this.props;
 
     const status = {
       0: '未审核',
@@ -79,10 +84,6 @@ export default class UserList extends Component {
       title: '小程序名称',
       dataIndex: 'name',
       key: 'name'
-    }, {
-      title: '简介',
-      dataIndex: 'description',
-      key: 'description'
     },{
       title: '产品介绍',
       dataIndex: 'slogan',
@@ -106,7 +107,7 @@ export default class UserList extends Component {
       title: '申请时间',
       dataIndex: 'createTime',
       key: 'createTime',
-      render: (text) => <span>moment(text).format('YYYY-MM-DD HH:mm:ss')</span>
+      render: (text) => <span>{moment(text*1000).format('YYYY-MM-DD HH:mm:ss')}</span>
     },{
       title: '操作',
       key: 'operation',
@@ -114,7 +115,13 @@ export default class UserList extends Component {
     }, {
       title: '排序',
       key: 'sort',
-      render: (text, record, i) => <div className={styles.sort} draggable="true"><Button onClick={up.bind(this, i)} type="ghost" shape="circle" icon="up" /><Button type="ghost" onClick={down.bind(this, i)} shape="circle" icon="down" /></div>
+      render: (text, record, i) => 
+                <div className={styles.sort} draggable="true">
+                  <Button onClick={sort.bind(this, i, (i - 1))} 
+                          type="ghost" shape="circle" icon="up" />
+                  <Button type="ghost" onClick={sort.bind(this, i, (i + 1))} 
+                          shape="circle" icon="down" />
+                </div>
     }];
 
 

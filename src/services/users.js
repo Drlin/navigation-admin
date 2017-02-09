@@ -22,6 +22,13 @@ export async function getSortList(params) {
     credentials: 'include'
   });
 }
+export async function updateSort(params) {
+  return request(`/product/updateSort`, {
+    method: 'post',
+    credentials: 'include',
+    body: JSON.stringify(params)
+  });
+}
 
 
 

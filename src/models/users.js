@@ -3,7 +3,7 @@ import key from 'keymaster';
 import { message } from 'antd';
 import { routerRedux } from 'dva/router';
 import _ from 'lodash';
-import { login, getSortList, query} from '../services/users';
+import { login, getSortList, query, updateSort} from '../services/users';
 import CookieUtil from '../utils/Utils'
 
 export default {
@@ -81,7 +81,7 @@ export default {
         }
       }
     },
-    *getSortList({ payload }, { call, put, select }) {
+    *getSortList({ payload}, { call, put, select }) {
       const todos = CookieUtil.getAll('admin');
       if (todos && todos.phoneNo) {
         const { data } = yield call(getSortList, payload);
@@ -93,16 +93,33 @@ export default {
               totalPage: data.data.totalPage
             },
           });
-          // let trs = document.getElementsByTagName('tr');
-          // for (let i = 0; i < trs.length; i++) {
-          //   if (i !== 0) {
-          //     trs[i].setAttribute('draggable', 'true');
-          //     trs[i].dataset.id = (i - 1);
-          //   }
-          // }
+          let trs = document.getElementsByTagName('tr');
+          for (let i = 0; i < trs.length; i++) {
+            if (i !== 0) {
+              trs[i].setAttribute('draggable', 'true');
+              trs[i].dataset.id = (i - 1);
+            }
+          }
         } else {
           message.error(data.msg);
         }
+      }
+    },
+    *updateSort({ payload }, { call, put, select }) {
+      let query = payload.myLocation.query
+      const { data } = yield call(updateSort, {
+        productId: payload.productId,
+        targetProductId: payload.targetProductId,
+        category: query.category || ''
+      });
+
+      if (data && data.statusCode === 0) {
+        yield put({
+          type: 'getSortList',
+          payload: query,
+        });
+      } else {
+        message.error(data.msg);
       }
     }
   },

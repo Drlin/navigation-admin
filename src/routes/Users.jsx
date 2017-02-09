@@ -45,16 +45,17 @@ function Users({ location, dispatch, users }) {
         payload: id,
       });
     },
-    up(i) {
+    sort(fromId, toId) {
+      if (!dataSource[fromId] || !dataSource[toId]) {
+        return;
+      }
+      let productId = dataSource[fromId].productId;
+      let targetProductId = dataSource[toId].productId;
       dispatch({
-        type: 'users/up',
-        payload: i,
-      });
-    },
-    down(i) {
-      dispatch({
-        type: 'users/down',
-        payload: i,
+        type: 'users/updateSort',
+        payload: {
+          productId, targetProductId, myLocation
+        },
       });
     },
     handlePreview(src) {
