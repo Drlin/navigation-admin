@@ -17,7 +17,7 @@ const UserSearch = ({
     validateFields,
     getFieldsValue,
     },
-    myLoaction
+    myLocation
   }) => {
   function handleSubmit(e) {
     e.preventDefault();
@@ -44,7 +44,7 @@ const UserSearch = ({
                 key={item.key}
               >
                 {getFieldDecorator(item.key, {
-                  initialValue: myLoaction.query[item.key] || '',
+                  initialValue: myLocation.query[item.key] || '',
                 })(
                   <Input type="text" placeholder={item.content}/>
                 )}
@@ -60,7 +60,7 @@ const UserSearch = ({
           <Button style={{ marginRight: '10px' }} type="primary" htmlType="submit">搜索</Button>
         </Form>
       </div>
-      <Select defaultValue="" style={{ width: 120 }} onChange={handleChange}>
+      <Select value={myLocation.query.category || ''} style={{ width: 120 }} onChange={handleChange}>
       <Select.Option value="">全部</Select.Option>
         {
           list.map((item) => {

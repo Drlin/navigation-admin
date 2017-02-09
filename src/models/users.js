@@ -50,19 +50,16 @@ export default {
           },
         });
         if (data.statusCode === 0) {
+          let phoneNo = data.data.phoneNo;
+          CookieUtil.setAll('admin', {phoneNo});
           yield put({
             type: 'loginSuccess',
             payload: data.data,
           });
-          CookieUtil.setAll('admin', {phoneNo:  data.data.phoneNo})
-          yield put({
-            type: 'query',
-            payload: location.query,
-          });
-          yield put({
-            type: 'getSortList',
-            payload: location.query,
-          });
+          yield put(routerRedux.push({
+            pathname: '/',
+            query: { phoneNo }
+          }));
         } else {
           message.error(data.msg);
         }
@@ -70,7 +67,6 @@ export default {
     },
     *query({ payload }, { call, put, select }) {
       const todos = CookieUtil.getAll('admin');
-
       if (todos && todos.phoneNo) {
        const { data } = yield call(query, payload);
        if (data && data.statusCode === 0) {

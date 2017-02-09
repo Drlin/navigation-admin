@@ -2,6 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import { Table, Popconfirm, Pagination, Button, Icon } from 'antd';
 import { Link } from 'dva/router';
 import Animate from 'rc-animate';
+import moment from 'moment';
 import styles from './UserList.less';
 
 export default class UserList extends Component {
@@ -67,12 +68,11 @@ export default class UserList extends Component {
   }
 
   render() {
-    const {totalPage, current, loading, onPageChange, dataSource, up, handlePreview, down} = this.props;
+    const {totalPage, myLocation, current, loading, onPageChange, dataSource, up, handlePreview, down} = this.props;
 
     const status = {
       0: '未审核',
-      1: '审核通过',
-      2: '审核不通过'
+      1: '已审核'
     }
 
     const columns = [{
@@ -99,13 +99,14 @@ export default class UserList extends Component {
       render:  (logoImgUrl) => <img className={styles.qrImgUrl} src={logoImgUrl} onClick={handlePreview.bind(this, logoImgUrl)} />
     },{
       title: '审核状态',
-      dataIndex: 'subject',
-      key: 'subject',
+      dataIndex: 'status',
+      key: 'status',
       render: (text) => <span>{status[text]}</span>
     },{
       title: '申请时间',
-      dataIndex: 'time',
-      key: 'time'
+      dataIndex: 'createTime',
+      key: 'createTime',
+      render: (text) => <span>moment(text).format('YYYY-MM-DD HH:mm:ss')</span>
     },{
       title: '操作',
       key: 'operation',
@@ -131,7 +132,7 @@ export default class UserList extends Component {
         <Pagination
           className="ant-table-pagination"
           total={+totalPage}
-          current={current}
+          current={+myLocation.query.pageNo || 1}
           pageSize={20}
           onChange={onPageChange}
         />

@@ -16,17 +16,18 @@ function Users({ location, dispatch, users }) {
     largeImage
     } = users;
 
-  const myLoaction = location;
+  const myLocation = location;
 
   const userListProps = {
     dataSource,
     totalPage,
-    onPageChange(page) {
+    myLocation, 
+    onPageChange(pageNo) {
       let newObj = location.query
-      delete newObj.page
+      delete newObj.pageNo
       dispatch(routerRedux.push({
         pathname: '/',
-        query: { page, ...newObj },
+        query: { pageNo, ...newObj },
       }));
     },
     onInquiries(id, name) {
@@ -67,7 +68,7 @@ function Users({ location, dispatch, users }) {
   };
 
   const userSearchProps = {
-    myLoaction,
+    myLocation,
     inputData,
     list,
     onSearch(fieldsValue) {
@@ -79,7 +80,7 @@ function Users({ location, dispatch, users }) {
     changeCategory(value) {
       dispatch(routerRedux.push({
         pathname: '/',
-        query: { phoneNo,  categoryId: value},
+        query: { phoneNo,  category: value},
       }));
     }
   };
