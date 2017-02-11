@@ -3,6 +3,7 @@ import key from 'keymaster';
 import { message } from 'antd';
 import { routerRedux } from 'dva/router';
 import _ from 'lodash';
+import Cookie from 'js-cookie';
 import { login, getSortList, query, updateSort} from '../services/users';
 import CookieUtil from '../utils/Utils'
 
@@ -51,7 +52,7 @@ export default {
         });
         if (data.statusCode === 0) {
           let phoneNo = data.data.phoneNo;
-          CookieUtil.setAll('admin', {phoneNo});
+          Cookie.set('phoneNo', phoneNo);
           yield put({
             type: 'loginSuccess',
             payload: data.data,
@@ -66,8 +67,8 @@ export default {
       }
     },
     *query({ payload }, { call, put, select }) {
-      const todos = CookieUtil.getAll('admin');
-      if (todos && todos.phoneNo) {
+      const todos = Cookie.get('PHPSESSID')
+      if (todos) {
        const { data } = yield call(query, payload);
        if (data && data.statusCode === 0) {
           yield put({
@@ -82,8 +83,9 @@ export default {
       }
     },
     *getSortList({ payload}, { call, put, select }) {
-      const todos = CookieUtil.getAll('admin');
-      if (todos && todos.phoneNo) {
+      const todos = Cookie.get('PHPSESSID')
+      let status = payload.status;
+      if (todos) {
         const { data } = yield call(getSortList, payload);
         if (data && data.statusCode === 0) {
           yield put({
@@ -93,11 +95,13 @@ export default {
               totalPage: data.data.totalPage
             },
           });
-          let trs = document.getElementsByTagName('tr');
-          for (let i = 0; i < trs.length; i++) {
-            if (i !== 0) {
-              trs[i].setAttribute('draggable', 'true');
-              trs[i].dataset.id = (i - 1);
+          if (status === '2') {
+            let trs = document.getElementsByTagName('tr');
+            for (let i = 0; i < trs.length; i++) {
+              if (i !== 0) {
+                trs[i].setAttribute('draggable', 'true');
+                trs[i].dataset.id = (i - 1);
+              }
             }
           }
         } else {

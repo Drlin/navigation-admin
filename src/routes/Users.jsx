@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { routerRedux } from 'dva/router';
 import { connect } from 'dva';
+import { Menu, Icon } from 'antd';
 import MainLayout from '../components/MainLayout/MainLayout';
 import styles from './Users.less';
 import UserList from '../components/Users/UserList';
@@ -9,6 +10,9 @@ import UserModel from '../components/Users/UserModel';
 import UserTest from '../components/Users/UserTest';
 import UserImage from '../components/Users/UserImage';
 import UserAnmiate from '../components/Users/UserAnmiate';
+
+const SubMenu = Menu.SubMenu;
+const MenuItemGroup = Menu.ItemGroup;
 
 function Users({ location, dispatch, users }) {
   const {
@@ -120,9 +124,30 @@ function Users({ location, dispatch, users }) {
     });
   }
 
+  function handleClick(e) {
+    let newObj = myLocation.query
+    dispatch(routerRedux.push({
+      pathname: '/',
+      query: { ...newObj,  ...{status: e.key}},
+    }));
+  }
+
   return (
     <MainLayout location={location} onModel={onModel} phoneNo={phoneNo}>
       <div className={styles.normal}>
+         <Menu
+          onClick={handleClick}
+          mode="horizontal"
+          selectedKeys={[myLocation.query.status || '1']}
+          style={{ marginBottom: '20px' }}
+        >
+          <Menu.Item key='1'>
+            <Icon type="question-circle-o" />未审核
+          </Menu.Item>
+          <Menu.Item key='2'>
+            <Icon type="check-circle-o" />审核通过
+          </Menu.Item>
+        </Menu>
         <UserSearch {...userSearchProps} />
         <UserList {...userListProps} />
         <UserModel {...userModelProps}/>

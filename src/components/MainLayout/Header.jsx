@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Menu, Icon } from 'antd';
 import { Link } from 'dva/router';
+import Cookie from 'js-cookie';
 import styles from './MainLayout.less';
 import CookieUtil from '../../utils/Utils'
 
@@ -15,8 +16,8 @@ function Header({ location, onModel }) {
       </Menu.Item>
       <Menu.Item key="login" style={{float: 'right'}}>
         {
-          !CookieUtil.getAll('admin') ? <span className={styles.login} onClick={onModel}>登录</span>
-          : <span>欢迎你,{CookieUtil.getAll('admin').phoneNo}</span>
+          !Cookie.get('phoneNo') ? <span className={styles.login} onClick={onModel}>登录</span>
+          : <span>欢迎你,{Cookie.get('phoneNo')}</span>
         }
         
       </Menu.Item>

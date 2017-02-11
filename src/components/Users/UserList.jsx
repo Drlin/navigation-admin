@@ -74,6 +74,17 @@ export default class UserList extends Component {
 
   render() {
     const {totalPage, myLocation, current, loading, onPageChange, dataSource, sort, handlePreview} = this.props;
+    let query = myLocation.query;
+    let data = [];
+    if (query.status === '2') {
+      data = dataSource.filter((item) => {
+        return item.status === '1'
+      })
+    } else {
+      data = dataSource.filter((item) => {
+        return item.status === '0'
+      })
+    }
 
     const status = {
       0: '未审核',
@@ -115,6 +126,7 @@ export default class UserList extends Component {
     }, {
       title: '排序',
       key: 'sort',
+      className: query.status === '2' ? '' : styles.hide,
       render: (text, record, i) => 
                 <div className={styles.sort} draggable="true">
                   <Button onClick={sort.bind(this, i, (i - 1))} 
@@ -129,7 +141,7 @@ export default class UserList extends Component {
       <div>
         <Table
           columns={columns}
-          dataSource={dataSource}
+          dataSource={data}
           rowKey={record => record.productId}
           pagination={false}
           bordered
@@ -139,7 +151,7 @@ export default class UserList extends Component {
         <Pagination
           className="ant-table-pagination"
           total={+totalPage}
-          current={+myLocation.query.pageNo || 1}
+          current={+query.pageNo || 1}
           pageSize={20}
           onChange={onPageChange}
         />
