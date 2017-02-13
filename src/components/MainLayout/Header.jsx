@@ -16,7 +16,7 @@ function Header({ location, onModel }) {
       </Menu.Item>
       <Menu.Item key="login" style={{float: 'right'}}>
         {
-          !Cookie.get('phoneNo') ? <span className={styles.login} onClick={onModel}>登录</span>
+          !Cookie.get('PHPSESSID') ? <span className={styles.login} onClick={onModel}>登录</span>
           : <span>欢迎你,{Cookie.get('phoneNo')}</span>
         }
         
