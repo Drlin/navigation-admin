@@ -1,7 +1,3 @@
-const fs = require('fs');
-const path = require('path');
-const glob = require('glob');
-
 module.exports = function (webpackConfig, env) {
   webpackConfig.babel.babelrc = false;
   webpackConfig.babel.plugins.push('transform-runtime');
@@ -9,7 +5,20 @@ module.exports = function (webpackConfig, env) {
     libraryName: 'antd',
     style: 'css'  // if true, use less
   }]);
-
+  webpackConfig.devServer = {
+    historyApiFallback: true,
+    port:8000,
+    hot: true,
+    inline: true,
+    host:'0.0.0.0',
+    proxy: {
+     '/api/*': {
+         changeOrigin: true,
+         target: 'http://www.drrlin.com',
+         secure: false,
+     }
+   }
+  }
   // Enable hmr for development.
   if (env === 'development') {
     webpackConfig.babel.plugins.push('dva-hmr');

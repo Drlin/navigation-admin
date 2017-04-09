@@ -2,7 +2,7 @@ import request from '../utils/request';
 import qs from 'qs';
 
 export async function query(params) {
-  return request(`/category/getList`, {
+  return request(`/api/admin/lists`, {
   //return request('../getList.json', {
     credentials: 'include'
   });

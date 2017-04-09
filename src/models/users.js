@@ -50,7 +50,7 @@ export default {
             visible: false
           },
         });
-        if (data.statusCode === 0) {
+        if (data.status === 0) {
           let phoneNo = data.data.phoneNo;
           Cookie.set('phoneNo', phoneNo);
           yield put({
@@ -67,19 +67,16 @@ export default {
       }
     },
     *query({ payload }, { call, put, select }) {
-      const todos = Cookie.get('PHPSESSID')
-      if (todos) {
-       const { data } = yield call(query, payload);
-       if (data && data.statusCode === 0) {
-          yield put({
-            type: 'querySuccess',
-            payload: {
-              list: data.data.list
-            },
-          });
-        } else {
-          message.error(data.msg);
-        }
+     const { data } = yield call(query, payload);
+     if (data && data.status === 0) {
+        yield put({
+          type: 'querySuccess',
+          payload: {
+            list: data.data.list
+          },
+        });
+      } else {
+        data && message.error(data.msg);
       }
     },
     *getSortList({ payload}, { call, put, select }) {
